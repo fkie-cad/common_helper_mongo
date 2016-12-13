@@ -2,6 +2,44 @@ import logging
 from bson.son import SON
 
 
+def get_list_of_all_values(collection, object_path, unwind=False, match=None):
+    """
+    Get a list of unique values on a specific object path in a collection.
+    An Optional search string (match) can be added.
+
+    :param collection: mongo collection to look at
+    :type collection: pymongo.collection
+    :param object_path: mongo object path
+    :type object_path: str
+    :param unwind: if true: handle list entries as single values
+    :type unwind: bool
+    :param match: mongo search string
+    :type match: dict
+    :return: list
+    """
+    pipeline = []
+    if match is not None:
+        pipeline.append({"$match": match})
+    pipeline.extend([
+        {"$group": {"_id": object_path}},
+        {"$sort": SON([("_id", 1)])}
+        ])
+    if unwind:
+        old_pipe = pipeline
+        pipeline = [{"$unwind": object_path}]
+        pipeline.extend(old_pipe)
+    result = _get_list_of_aggregate_list(list(collection.aggregate(pipeline)))
+    logging.debug(result)
+    return result
+
+
+def _get_list_of_aggregate_list(ag_list):
+    result = []
+    for item in ag_list:
+        result.append(item['_id'])
+    return result
+
+
 def get_objects_and_count_of_occurrence(collection, object_path, unwind=False, match=None):
     """
     Get a list of unique values and their occurences on a specific object path in a collection.
