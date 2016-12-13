@@ -1,4 +1,5 @@
-from common_helper_mongo.aggregate import get_objects_and_count_of_occurrence
+from common_helper_mongo.aggregate import get_objects_and_count_of_occurrence,\
+    get_field_sum, get_field_average
 import unittest
 from tests.base_class_database_test import MongoDbTest
 
@@ -24,7 +25,16 @@ class TestAggregate(MongoDbTest):
         result = get_objects_and_count_of_occurrence(self.test_collection, "$test_txt", unwind="False", match={"test_int": 0})
         self.assertEqual(len(result), 1, "number of results not correct")
         self.assertEqual(result[0]['_id'], "item 0")
-        print(result)
+
+    def test_get_field_sum(self):
+        self.add_simple_test_data()
+        result = get_field_sum(self.test_collection, "$test_int")
+        self.assertEqual(result, 45)
+
+    def test_get_field_avg(self):
+        self.add_simple_test_data()
+        result = get_field_average(self.test_collection, "$test_int")
+        self.assertEqual(result, 4.5)
 
 
 if __name__ == "__main__":
