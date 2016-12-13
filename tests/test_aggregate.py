@@ -36,6 +36,11 @@ class TestAggregate(MongoDbTest):
         result = get_field_average(self.test_collection, "$test_int")
         self.assertEqual(result, 4.5)
 
+    def test_get_field_sum_match(self):
+        self.add_simple_test_data()
+        result = get_field_sum(self.test_collection, "$test_int", match={"test_int": {"$lt": 5}})
+        self.assertEqual(result, 10)
+
 
 if __name__ == "__main__":
     unittest.main()
