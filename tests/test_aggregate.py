@@ -19,6 +19,13 @@ class TestAggregate(MongoDbTest):
         self.assertEqual(result[0]['_id'], "c", "should be the first element because it has two ocurrences")
         self.assertEqual(result[0]['count'], 2)
 
+    def test_get_objects_and_count_match(self):
+        self.add_simple_test_data()
+        result = get_objects_and_count_of_occurrence(self.test_collection, "$test_txt", unwind="False", match={"test_int": 0})
+        self.assertEqual(len(result), 1, "number of results not correct")
+        self.assertEqual(result[0]['_id'], "item 0")
+        print(result)
+
 
 if __name__ == "__main__":
     unittest.main()
