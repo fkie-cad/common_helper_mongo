@@ -1,20 +1,15 @@
 import unittest
-from pymongo import MongoClient
 import gridfs
 
 from common_helper_mongo.gridfs import overwrite_file
+from tests.base_class_database_test import MongoDbTest
 
 
-class TestGridFS(unittest.TestCase):
+class TestGridFS(MongoDbTest):
 
     def setUp(self):
-        self.mongo_client = MongoClient()
-        self.db = self.mongo_client["common_code_test"]
+        super().setUp()
         self.fs = gridfs.GridFS(self.db)
-
-    def tearDown(self):
-        self.mongo_client.drop_database(self.db)
-        self.mongo_client.close()
 
     def testOverwriteFile(self):
         self.fs.put(b'original', filename="test_file")
@@ -27,5 +22,4 @@ class TestGridFS(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
