@@ -33,6 +33,47 @@ def get_list_of_all_values(collection, object_path, unwind=False, match=None):
     return result
 
 
+def get_list_of_all_values_and_collect_information_of_additional_field(collection, object_path, additional_information_object_path, unwind=False, match=None):
+    """
+    Get a list of unique values and a collection of additional information on a specific object path in a collection.
+    An Optional search string (match) can be added.
+
+    :param collection: mongo collection to look at
+    :type collection: pymongo.collection
+    :param object_path: mongo object path
+    :type object_path: str
+    :param additional_information_object_path: field of the additional information
+    :type additional_information_object_path: str
+    :param unwind: if true: handle list entries as single values
+    :type unwind: bool
+    :param match: mongo search string
+    :type match: dict
+    :return: [{'_id': <VALUE>, 'count': <OCCURENCES>}, ...]
+    """
+    pipeline = []
+    if match is not None:
+        pipeline.append({"$match": match})
+    pipeline.extend([
+        {"$group": {"_id": object_path, "additional_information": {"$addToSet": "$_id"}}},
+        {"$sort": SON([("_id", 1)])}
+        ])
+    if unwind:
+        old_pipe = pipeline
+        pipeline = [{"$unwind": object_path}]
+        pipeline.extend(old_pipe)
+    result = list(collection.aggregate(pipeline))
+    result = _get_dict_from_aggregat_list(result)
+    logging.debug(result)
+    return result
+
+
+def _get_dict_from_aggregat_list(ag_list):
+    result = {}
+    for item in ag_list:
+        result[item['_id']] = item['additional_information']
+    return result
+
+
 def _get_list_of_aggregate_list(ag_list):
     result = []
     for item in ag_list:
