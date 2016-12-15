@@ -48,7 +48,7 @@ def get_list_of_all_values_and_collect_information_of_additional_field(collectio
     :type unwind: bool
     :param match: mongo search string
     :type match: dict
-    :return: [{'_id': <VALUE>, 'count': <OCCURENCES>}, ...]
+    :return: {<VALUE>:[<ADDITIONAL_INFORMATION_1>, ...], ...}
     """
     pipeline = []
     if match is not None:
