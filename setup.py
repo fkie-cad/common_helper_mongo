@@ -2,9 +2,15 @@ import os
 import subprocess
 from setuptools import setup, find_packages
 
+try:
+    VERSION = subprocess.check_output(['git', 'describe', '--always'], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode('utf-8')
+except Exception:
+    VERSION = "0.x"
+
+
 setup(
     name="common_helper_mongo",
-    version=subprocess.check_output(['git', 'describe', '--always'], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode('utf-8'),
+    version=VERSION,
     packages=find_packages(),
     install_requires=[
         'pymongo >= 3.2'
