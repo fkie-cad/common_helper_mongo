@@ -1,12 +1,6 @@
-import os
-import subprocess
 from setuptools import setup, find_packages
 
-try:
-    VERSION = subprocess.check_output(['git', 'describe', '--always'], cwd=os.path.dirname(os.path.abspath(__file__))).strip().decode('utf-8')
-except Exception:
-    VERSION = "0.x"
-
+VERSION = "0.3.2"
 
 setup(
     name="common_helper_mongo",
