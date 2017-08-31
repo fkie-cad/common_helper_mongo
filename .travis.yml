@@ -11,6 +11,7 @@ addons:
 install: 
   - "sudo apt-get update -qq"  
   - "sudo apt-get install -y mongodb-org" 
+  - "sudo service mongod start"
   - "python setup.py -q install"
   - "pip install pytest-pep8"
 # command to run tests
