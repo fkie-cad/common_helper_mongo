@@ -1,0 +1,17 @@
+language: python
+python:
+  - "3.5"
+  - "3.6"
+addons:
+ apt:
+  sources:
+  - sourceline: 'deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse'
+    key_url: 'https://www.mongodb.org/static/pgp/server-3.4.asc'
+
+install: 
+  - "sudo apt-get update -qq"  
+  - "sudo apt-get install -y mongodb-org" 
+  - "python setup.py -q install"
+  - "pip install pytest-pep8"
+# command to run tests
+script: pytest
