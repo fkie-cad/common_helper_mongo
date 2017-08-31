@@ -9,3 +9,4 @@ __pycache__/
 *~
 .project
 .pydevproject
+.cache/
