@@ -1,5 +1,6 @@
 # Common Helper Mongo
 [![Build Status](https://travis-ci.org/fkie-cad/common_helper_mongo.svg?branch=master)](https://travis-ci.org/fkie-cad/common_helper_mongo)
+[![codecov](https://codecov.io/gh/fkie-cad/common_helper_mongo/branch/master/graph/badge.svg)](https://codecov.io/gh/fkie-cad/common_helper_mongo)
 
 Provides some wrappers for statistic generation and some common gridfs helpers.
 
