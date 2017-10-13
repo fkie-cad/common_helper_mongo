@@ -21,6 +21,3 @@ class MongoDbTest(unittest.TestCase):
     def add_list_test_data(self):
         self.test_collection.insert_one({"test_list": ["a", "b", "c"]})
         self.test_collection.insert_one({"test_list": ["c", "d"]})
-
-if __name__ == "__main__":
-    unittest.main()

@@ -1,7 +1,6 @@
 from common_helper_mongo.aggregate import get_objects_and_count_of_occurrence,\
     get_field_sum, get_field_average, get_list_of_all_values,\
     get_list_of_all_values_and_collect_information_of_additional_field
-import unittest
 from tests.base_class_database_test import MongoDbTest
 
 
@@ -68,7 +67,3 @@ class TestAggregate(MongoDbTest):
         self.add_simple_test_data()
         result = get_field_sum(self.test_collection, "$test_int", match={"test_int": {"$lt": 5}})
         self.assertEqual(result, 10)
-
-
-if __name__ == "__main__":
-    unittest.main()

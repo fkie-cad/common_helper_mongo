@@ -1,4 +1,3 @@
-import unittest
 import gridfs
 
 from common_helper_mongo.gridfs import overwrite_file
@@ -19,7 +18,3 @@ class TestGridFS(MongoDbTest):
         self.assertEqual(len(self.fs.list()), 1, "original file not deleted")
         changed_content = self.fs.find_one({'filename': "test_file"}).read()
         self.assertEqual(changed_content, b'changed', "content not correct")
-
-
-if __name__ == "__main__":
-    unittest.main()
