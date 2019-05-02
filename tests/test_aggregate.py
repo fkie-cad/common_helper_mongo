@@ -1,6 +1,7 @@
-from common_helper_mongo.aggregate import get_objects_and_count_of_occurrence,\
-    get_field_sum, get_field_average, get_list_of_all_values,\
-    get_list_of_all_values_and_collect_information_of_additional_field
+from common_helper_mongo.aggregate import (
+    get_all_value_combinations_of_fields, get_field_average, get_field_sum, get_list_of_all_values,
+    get_objects_and_count_of_occurrence,
+)
 from tests.base_class_database_test import MongoDbTest
 
 
@@ -25,31 +26,40 @@ class TestAggregate(MongoDbTest):
         self.assertEqual(len(result), 4)
         self.assertEqual(result[0], "a")
 
-    def test_get_list_of_all_values_and_collect_information_of_additional_field(self):
+    def test_get_all_value_combinations_of_fields(self):
+        self.test_collection.insert_many([
+            {"test_list": ["a", "b"], "test_value": 1},
+            {"test_list": ["c", "d"], "test_value": 2},
+            {"test_list": ["a", "d"], "test_value": 1}
+        ])
+        result = get_all_value_combinations_of_fields(self.test_collection, "$test_list", "$test_value", unwind=True)
+        assert result == {'a': [1], 'b': [1], 'c': [2], 'd': [1, 2]}
+
+    def test_get_all_value_combinations_of_fields_id(self):
         self.add_list_test_data()
-        result = get_list_of_all_values_and_collect_information_of_additional_field(self.test_collection, "$test_list", "$_id", unwind=True, match=None)
+        result = get_all_value_combinations_of_fields(self.test_collection, "$test_list", "$_id", unwind=True, match=None)
         self.assertIsInstance(result, dict, "result should be a dict")
         self.assertEqual(len(result.keys()), 4, "number of results not correct")
         self.assertEqual(len(result['c']), 2, "c should have two related object ids")
         self.assertEqual(len(result['a']), 1, "a should have one related object id")
 
-    def test_get_objects_and_count_of_occurence(self):
+    def test_get_objects_and_count_of_occurrence(self):
         self.add_simple_test_data()
         result = get_objects_and_count_of_occurrence(self.test_collection, "$test_txt", unwind=False, match=None)
         self.assertEqual(len(result), 10, "number of results not correct")
-        self.assertEqual(result[0]['_id'], "item 1", "should be the fist element because it has two ocurrences")
+        self.assertEqual(result[0]['_id'], "item 1", "should be the fist element because it has two occurrences")
         self.assertEqual(result[0]['count'], 2)
 
     def test_get_objects_and_count_unwind(self):
         self.add_list_test_data()
         result = get_objects_and_count_of_occurrence(self.test_collection, "$test_list", unwind=True, match=None)
         self.assertEqual(len(result), 4, "number of results not correct")
-        self.assertEqual(result[0]['_id'], "c", "should be the first element because it has two ocurrences")
+        self.assertEqual(result[0]['_id'], "c", "should be the first element because it has two occurrences")
         self.assertEqual(result[0]['count'], 2)
 
     def test_get_objects_and_count_match(self):
         self.add_simple_test_data()
-        result = get_objects_and_count_of_occurrence(self.test_collection, "$test_txt", unwind="False", match={"test_int": 0})
+        result = get_objects_and_count_of_occurrence(self.test_collection, "$test_txt", unwind=False, match={"test_int": 0})
         self.assertEqual(len(result), 1, "number of results not correct")
         self.assertEqual(result[0]['_id'], "item 0")
 
