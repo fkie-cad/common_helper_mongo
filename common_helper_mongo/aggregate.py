@@ -2,6 +2,7 @@ import logging
 from typing import List, Optional
 
 from bson.son import SON
+from pymongo.command_cursor import CommandCursor
 
 
 def get_list_of_all_values(collection, object_path, unwind=False, match=None):
@@ -142,11 +143,11 @@ def get_field_average(collection, object_path, match=None):
 
 def get_field_execute_operation(operation, collection, object_path, match=None):
     pipeline = _build_pipeline(object_path, {'_id': 'null', 'total': {operation: object_path}}, match=match)
-    query = collection.aggregate(pipeline)
-    result = 0
-    for item in query:
-        result = item['total']
-    return result
+    query_result = collection.aggregate(pipeline)
+    try:
+        return query_result.next()['total']
+    except StopIteration:
+        return 0
 
 
 def _build_pipeline(object_path: str, group: dict, unwind: bool = False, sort_key: Optional[SON] = None,
