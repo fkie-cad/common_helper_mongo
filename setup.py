@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.3.3'
+VERSION = '0.4.0'
 
 setup(
     name='common_helper_mongo',
