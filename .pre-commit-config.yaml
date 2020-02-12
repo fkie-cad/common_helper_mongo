@@ -1,5 +1,4 @@
 default_stages: [commit, push]
-exclude: ^src/bin/
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.2.3
@@ -18,9 +17,6 @@ repos:
 
     -   id: fix-encoding-pragma
         args: [--remove]
-
-    -   id: file-contents-sorter
-        files: src/unpacker/passwords|.gitignore|_list.txt
 
     -   id: flake8
         args: [--ignore="E501,W503", --select=W504]
