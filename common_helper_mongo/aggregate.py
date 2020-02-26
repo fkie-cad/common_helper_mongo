@@ -2,7 +2,6 @@ import logging
 from typing import List, Optional
 
 from bson.son import SON
-from pymongo.command_cursor import CommandCursor
 
 
 def get_list_of_all_values(collection, object_path, unwind=False, match=None):
@@ -25,28 +24,6 @@ def get_list_of_all_values(collection, object_path, unwind=False, match=None):
     result = _get_list_of_aggregate_list(list(collection.aggregate(pipeline)))
     logging.debug(result)
     return result
-
-
-def get_list_of_all_values_and_collect_information_of_additional_field(
-        collection, object_path, additional_information_object_path, unwind=False, match=None):
-    '''
-    Get a list of unique values and a collection of additional information on a specific object path in a collection.
-    An Optional search string (match) can be added.
-
-    :param collection: mongo collection to look at
-    :type collection: pymongo.collection.Collection
-    :param object_path: mongo object path
-    :type object_path: str
-    :param additional_information_object_path: field of the additional information
-    :type additional_information_object_path: str
-    :param unwind: if true: handle list entries as single values
-    :type unwind: bool
-    :param match: mongo search string
-    :type match: dict, optional
-    :return: {<VALUE>:[<ADDITIONAL_INFORMATION_1>, ...], ...}
-    '''
-    logging.warning('deprecation warning: this method will be removed in a future release')
-    return get_all_value_combinations_of_fields(collection, object_path, additional_information_object_path, unwind, match)
 
 
 def get_all_value_combinations_of_fields(collection, primary_field, secondary_field, unwind=False, match=None):

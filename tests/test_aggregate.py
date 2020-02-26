@@ -1,6 +1,6 @@
 from common_helper_mongo.aggregate import (
     get_all_value_combinations_of_fields, get_field_average, get_field_sum, get_list_of_all_values,
-    get_list_of_all_values_and_collect_information_of_additional_field, get_objects_and_count_of_occurrence,
+    get_objects_and_count_of_occurrence
 )
 from tests.base_class_database_test import MongoDbTest
 
@@ -81,9 +81,3 @@ class TestAggregate(MongoDbTest):
     def test_get_field_execute_operation_empty(self):
         result = get_field_sum(self.test_collection, "$test_int")
         self.assertEqual(result, 0)
-
-    def test_get_list_of_all_values_and_collect_information_of_additional_field(self):
-        self.add_list_test_data()
-        with self.assertLogs() as logger:
-            get_list_of_all_values_and_collect_information_of_additional_field(self.test_collection, "$test_list", "$_id", unwind=True)
-            assert 'deprecation warning' in logger.output.pop()
