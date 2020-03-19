@@ -21,7 +21,7 @@ def get_list_of_all_values(collection, object_path, unwind=False, match=None):
     :return: list
     '''
     pipeline = _build_pipeline(object_path, {'_id': object_path}, unwind, SON([('_id', 1)]), match)
-    result = _get_list_of_aggregate_list(list(collection.aggregate(pipeline)))
+    result = _get_list_of_aggregate_list(list(collection.aggregate(pipeline, allowDiskUse=True)))
     logging.debug(result)
     return result
 
@@ -47,7 +47,7 @@ def get_all_value_combinations_of_fields(collection, primary_field, secondary_fi
         primary_field, {'_id': primary_field, 'additional_information': {'$addToSet': secondary_field}},
         unwind, SON([('_id', 1)]), match
     )
-    result = list(collection.aggregate(pipeline))
+    result = list(collection.aggregate(pipeline, allowDiskUse=True))
     result = _get_dict_from_aggregate_list(result)
     logging.debug(result)
     return result
@@ -81,7 +81,7 @@ def get_objects_and_count_of_occurrence(collection, object_path, unwind=False, m
     '''
     pipeline = _build_pipeline(object_path, {'_id': object_path, 'count': {'$sum': 1}}, unwind,
                                SON([('count', -1), ('_id', -1)]), match)
-    result = list(collection.aggregate(pipeline))
+    result = list(collection.aggregate(pipeline, allowDiskUse=True))
     logging.debug(result)
     return result
 
@@ -120,7 +120,7 @@ def get_field_average(collection, object_path, match=None):
 
 def get_field_execute_operation(operation, collection, object_path, match=None):
     pipeline = _build_pipeline(object_path, {'_id': 'null', 'total': {operation: object_path}}, match=match)
-    query_result = collection.aggregate(pipeline)
+    query_result = collection.aggregate(pipeline, allowDiskUse=True)
     try:
         return query_result.next()['total']
     except StopIteration:
